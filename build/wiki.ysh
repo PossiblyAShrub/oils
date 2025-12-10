@@ -20,8 +20,6 @@ const WIKI_OUT_DIR = '_tmp/wiki/out'
 const WIKI_DIR = '_tmp/wiki/git'
 const PAGES_DIR = '_tmp/wiki/oils-for-unix.github.io'
 
-const DATE = $(date --rfc-email)
-
 proc pull-latest(dir, repo) {
   ## Pull the latest commit from $repo to $dir. Will clone if necessary
 
@@ -81,10 +79,6 @@ proc render-one(path) {
     pre-render-wikilinks <$path | cmark
 
     echo """
-      <div id="build-timestamp">
-        <i>Generated on $DATE</i>
-      </div>
-
       </body>
     </html>
     """
@@ -99,8 +93,8 @@ proc render() {
 
 
 proc commit-push() {
-  var USER = get(ENV, 'OILS_PAGES_GITHUB_USER')
-  var PAT = get(ENV, 'OILS_PAGES_GITHUB_TOKEN')
+  var USER = ENV.OILS_PAGES_GITHUB_USER
+  var PAT = ENV.OILS_PAGES_GITHUB_TOKEN
   pull-latest $PAGES_DIR "https://$USER:$PAT@github.com/PossiblyAShrub/oils-for-unix.github.io.git"
 
   # Stash and pending changes (there should be none)
@@ -119,7 +113,8 @@ proc commit-push() {
     if git diff --quiet --staged {
       echo 'No changes, will not commit'
     } else {
-      git commit -m "Bump wiki $DATE"
+      var date = $(date --rfc-email)
+      git commit -m "Bump wiki $date"
       git push
     }
   }
