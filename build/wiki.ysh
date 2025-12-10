@@ -105,9 +105,8 @@ proc render() {
 proc commit-push() {
   ## Commit and push the most recent build to oils-for-unix.github.io
 
-  var USER = ENV.OILS_PAGES_GITHUB_USER
   var PAT = ENV.OILS_PAGES_GITHUB_TOKEN
-  pull-latest $PAGES_DIR "https://$USER:$PAT@github.com/PossiblyAShrub/oils-for-unix.github.io.git"
+  pull-latest $PAGES_DIR "https://x-access-token:$PAT@github.com/PossiblyAShrub/oils-for-unix.github.io.git"
 
   # Stash and pending changes (there should be none)
   cd $PAGES_DIR {
